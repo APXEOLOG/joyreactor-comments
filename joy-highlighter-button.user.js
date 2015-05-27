@@ -63,6 +63,11 @@ $(document).ready(function() {
                 }, 800);
             }
         });
+        if (!found) {
+            $('html, body').animate({
+                scrollTop: $('.pagination').offset().top
+            }, 800);
+        }
     };
     
     $('body').on('click', '#com_next', function() {

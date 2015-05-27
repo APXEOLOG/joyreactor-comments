@@ -53,6 +53,7 @@ $(document).ready(function() {
     };
     
     var goToNextPost = function() {
+    	comments = [];
         var found = false;
         $('.postContainer').each(function(index, element) {
             if (!found && $(element).offset().top > window.scrollY) {

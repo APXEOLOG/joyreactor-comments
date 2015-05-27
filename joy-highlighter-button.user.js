@@ -1,7 +1,7 @@
 ﻿// ==UserScript==
 // @name         Joyreactor Comments Highlighter & Btn
 // @namespace    http://apxeolog.com/
-// @version      1.0
+// @version      1.1
 // @description  Simple script to highlight top-rated comments with nav button
 // @author       APXEOLOG
 // @match        http://*.joyreactor.cc/*
@@ -37,21 +37,38 @@ $(document).ready(function() {
     sliderElement.html('<div><button id="com_next" style="margin: 3px; padding: 5px 20px"><p style="width: 10px; font: normal normal normal 13.3px/normal Arial">↓</p></button></div>');
     $('body').append(sliderElement);
 
+    var pressTimer;
+    $("#com_next").mouseup(function() {
+        clearTimeout(pressTimer);
+        return false;
+    }).mousedown(function() {
+        pressTimer = window.setTimeout(function() { goToNextPost(); },1000);
+        return false; 
+    });
+    
+    var goToNextComment = function() {
+        $('html, body').animate({
+            scrollTop: $("#comment" + comments.shift().id).offset().top - window.screen.height / 4
+        }, 800);
+    };
+    
+    var goToNextPost = function() {
+        var found = false;
+        $('.postContainer').each(function(index, element) {
+            if (!found && $(element).offset().top > window.scrollY) {
+                found = true;
+                $('html, body').animate({
+                    scrollTop: $(element).offset().top
+                }, 800);
+            }
+        });
+    };
+    
     $('body').on('click', '#com_next', function() {
         if (comments.length > 0) {
-            $('html, body').animate({
-                scrollTop: $("#comment" + comments.shift().id).offset().top - window.screen.height / 4
-            }, 800);
+            goToNextComment();
         } else {
-            var found = false;
-            $('.postContainer').each(function(index, element) {
-                if (!found && $(element).offset().top > window.scrollY) {
-                    found = true;
-                    $('html, body').animate({
-                        scrollTop: $(element).offset().top
-                    }, 800);
-                }
-            });
+            goToNextPost();
         }
     });
 });
